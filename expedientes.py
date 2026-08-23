@@ -1,70 +1,70 @@
-# Módulo de Registo e Gestão de Expedientes
-# Desenvolvido por: bentozucule
+ # Módulo de Gestão de Expedientes
+# Desenvolvido por: iossene2 e bentozucule
 
-# Estrutura em memória para armazenar expedientes
 expedientes_db = []
-contador_id = 1001
+contador_id = 1
 
-def cadastrar_expediente():
+def criar_expediente(usuario_logado):
     global contador_id
-    print("\n--- REGISTO DE NOVO EXPEDIENTE ---")
-    remetente = input("Remetente (Entidade/Pessoa): ").strip()
-    assunto = input("Assunto do Expediente: ").strip()
-    tipo = input("Tipo (Carta, Ofício, Requerimento, Memorando): ").strip()
+    print("\n--- NOVA ENTRADA DE EXPEDIENTE ---")
+    titulo = input("Título do Documento: ").strip()
+    remetente = input("Remetente/Origem: ").strip()
     
     expediente = {
         "id": contador_id,
+        "titulo": titulo,
         "remetente": remetente,
-        "assunto": assunto,
-        "tipo": tipo,
-        "estado": "Pendente",
-        "localizacao": "Secretaria Geral"
+        "estado": "Entrada",
+        "criado_por": usuario_logado["usuario"]
     }
-    
     expedientes_db.append(expediente)
-    print(f"\n[+] Expediente Nº {contador_id} registado com sucesso!")
+    print(f"\n[+] Expediente #{contador_id} registado com sucesso por {usuario_logado['usuario']}!")
     contador_id += 1
 
 def listar_expedientes():
     print("\n--- LISTA DE EXPEDIENTES ---")
     if not expedientes_db:
-        print("Nenhum expediente registado no sistema.")
+        print("Nenhum expediente registado.")
+        return
+
+    for exp in expedientes_db:
+        print(f"ID: {exp['id']} | Título: {exp['titulo']} | Estado: {exp['estado']} | Criador: {exp['criado_por']}")
+
+def tramitar_expediente(usuario_logado):
+    print("\n--- TRAMITAÇÃO DE EXPEDIENTE ---")
+    listar_expedientes()
+    if not expedientes_db:
         return
         
-    for exp in expedientes_db:
-        print(f"ID: {exp['id']} | Tipo: {exp['tipo']} | Remetente: {exp['remetente']}")
-        print(f"   Assunto: {exp['assunto']}")
-        print(f"   Estado: [{exp['estado']}] | Localização Atual: {exp['localizacao']}")
-        print("-" * 50)
-
-def atualizar_estado_expediente():
-    print("\n--- ATUALIZAR TRAMITAÇÃO DE EXPEDIENTE ---")
     try:
-        exp_id = int(input("Digite o ID do Expediente: "))
+        exp_id = int(input("\nDigite o ID do expediente a tramitar: "))
+        for exp in expedientes_db:
+            if exp["id"] == exp_id:
+                exp["estado"] = "Em Tramitação"
+                print(f"[+] Expediente #{exp_id} alterado para 'Em Tramitação' por {usuario_logado['usuario']}.")
+                return
+        print("[-] ID não encontrado.")
     except ValueError:
-        print("[-] ID inválido!")
+        print("[-] Entrada inválida.")
+
+def despachar_expediente(usuario_logado):
+    # Restrição RBAC: Apenas Gestor ou Administrador podem despachar
+    if usuario_logado["perfil"] not in ["Administrador", "Gestor"]:
+        print("\n[-] Acesso Negado: O seu perfil não tem permissão para despachar expedientes!")
         return
 
-    for exp in expedientes_db:
-        if exp["id"] == exp_id:
-            print(f"Expediente encontrado: {exp['assunto']} (Estado atual: {exp['estado']})")
-            print("1. Marcar como Em Análise")
-            print("2. Marcar como Despachado")
-            print("3. Marcar como Arquivado")
-            op = input("Opção: ").strip()
-            
-            if op == "1":
-                exp["estado"] = "Em Análise"
-            elif op == "2":
-                exp["estado"] = "Despachado"
-            elif op == "3":
-                exp["estado"] = "Arquivado"
-                
-            nova_loc = input("Nova Localização/Departamento: ").strip()
-            if nova_loc:
-                exp["localizacao"] = nova_loc
-                
-            print(f"[+] Expediente Nº {exp_id} atualizado com sucesso!")
-            return
-            
-    print("[-] Expediente não encontrado!")
+    print("\n--- DESPACHO DE EXPEDIENTE ---")
+    listar_expedientes()
+    if not expedientes_db:
+        return
+
+    try:
+        exp_id = int(input("\nDigite o ID do expediente a despachar: "))
+        for exp in expedientes_db:
+            if exp["id"] == exp_id:
+                exp["estado"] = "Despachado / Arquivado"
+                print(f"[+] Expediente #{exp_id} foi despachado e arquivado por {usuario_logado['usuario']}!")
+                return
+        print("[-] ID não encontrado.")
+    except ValueError:
+        print("[-] Entrada inválida.")
