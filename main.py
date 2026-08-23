@@ -41,7 +41,7 @@ def menu_principal():
         elif opcao == "4":
             expedientes.despachar_expediente(usuario_logado)
         elif opcao == "5":
-            relatorios.gerar_relatorio_geral(expedientes.expedientes_db)
+            relatorios.gerar_relatorio(expedientes.expedientes_db)
         elif opcao == "6":
             autenticacao.cadastrar_utilizador()
         elif opcao == "7":
