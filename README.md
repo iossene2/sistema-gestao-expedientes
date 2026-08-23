@@ -23,4 +23,4 @@ Sistema desenvolvido em Python para automação do ciclo de vida de documentos e
 ### Passos de Execução
 1. **Clonar o repositório:**
    ```bash
-   git clone [https://github.com/iossene2/sistema-gestao-expedientes.git](https://github.com/iossene2/sistema-gestao-expedientes.git)
+   git clone [https://github.com/iossene2/sistema-gestao-expedientes.git]
