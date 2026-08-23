@@ -3,6 +3,7 @@
 
 import autenticacao
 import expedientes
+import relatorios
 
 def menu_principal():
     usuario_logado = None
@@ -24,8 +25,9 @@ def menu_principal():
         print("2. Listar Expedientes")
         print("3. Tramitar Expediente")
         print("4. Despachar Expediente (Gestor/Admin)")
-        print("5. Cadastrar Novo Utilizador")
-        print("6. Terminar Sessão (Logout)")
+        print("5. Gerar Relatório / Auditoria")
+        print("6. Cadastrar Novo Utilizador")
+        print("7. Terminar Sessão (Logout)")
         print("0. Sair")
         
         opcao = input("Opção: ").strip()
@@ -39,8 +41,10 @@ def menu_principal():
         elif opcao == "4":
             expedientes.despachar_expediente(usuario_logado)
         elif opcao == "5":
-            autenticacao.cadastrar_utilizador()
+            relatorios.gerar_relatorio_geral(expedientes.expedientes_db)
         elif opcao == "6":
+            autenticacao.cadastrar_utilizador()
+        elif opcao == "7":
             usuario_logado = None
             print("\n[+] Sessão terminada com sucesso.")
         elif opcao == "0":
